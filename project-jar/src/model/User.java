@@ -1,16 +1,24 @@
 package model;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
+public class User implements Serializable{
 
-public class User {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	private String username;
 	
 	private String password;
 	
+	private List<UserMessage> messages;
 	
 	public User() {
-		
+		super();
 	}
 
 
@@ -18,6 +26,7 @@ public class User {
 		super();
 		this.username = username;
 		this.password = password;
+		this.messages = new ArrayList<UserMessage>();
 	}
 
 
@@ -39,8 +48,16 @@ public class User {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
-	
+
+
+	public List<UserMessage> getMessages() {
+		return messages;
+	}
+
+
+	public void setMessages(List<UserMessage> messages) {
+		this.messages = messages;
+	}
 	
 	
 }

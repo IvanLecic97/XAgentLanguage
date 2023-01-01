@@ -3,8 +3,8 @@
 	<name>project-ear</name>
 	<comment></comment>
 	<projects>
-		<project>project-jar</project>
 		<project>project-war</project>
+		<project>project-jar</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
