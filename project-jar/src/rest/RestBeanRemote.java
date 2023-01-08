@@ -6,6 +6,7 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
+import javax.ejb.Remote;
 import javax.ejb.Stateless;
 import javax.jms.ConnectionFactory;
 import javax.jms.ObjectMessage;
@@ -14,8 +15,11 @@ import javax.jms.QueueConnection;
 import javax.jms.QueueSender;
 import javax.jms.QueueSession;
 import javax.jms.Session;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -23,8 +27,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import agents.AgentManager;
 import dataManager.UserDataBean;
+import model.Node;
 import model.User;
 import model.UserMessage;
+import server.ServersRestLocal;
 //import ws.WSEndpoint;
 import ws.WSEndpoint;
 
@@ -33,6 +39,7 @@ import ws.WSEndpoint;
 @Stateless
 @LocalBean
 @Path("/chat")
+@Remote(RestBean.class)
 public class RestBeanRemote implements RestBean {
 	
 	@Resource(mappedName = "java:/ConnectionFactory")
@@ -48,6 +55,9 @@ public class RestBeanRemote implements RestBean {
 	
 	@EJB
 	private AgentManager agents;
+	
+	@EJB
+	private ServersRestLocal serversRest;
 
 	@Override
 	public String register(User user) {
@@ -55,9 +65,13 @@ public class RestBeanRemote implements RestBean {
 			return "That username already exists, pick a new one!";
 		}
 		else {
-		User newUser = new User(user.getUsername(), user.getPassword());
+		Node node = serversRest.getNode();
+		User newUser = new User(user.getUsername(), user.getPassword(), node.getAddress());
 		usersData.getRegisteredUsers().put(newUser.getUsername(), newUser);
 		agents.createNewAgent(newUser.getUsername(), newUser);
+		
+		serversRest.informNodesNewUserRegistered(newUser);
+		
 		return "Registered";
 		}
 	}
@@ -79,6 +93,8 @@ public class RestBeanRemote implements RestBean {
 			return Response.status(Response.Status.BAD_REQUEST).entity("Bad username or password, please try again!").build();
 		}
 		usersData.getLoggedInUsers().put(regUser.getUsername(), regUser);
+		
+		serversRest.informNodesAboutLoggedInUsers();
 		
 		//WebSocket
 		ObjectMapper mapper = new ObjectMapper();
@@ -167,6 +183,35 @@ public class RestBeanRemote implements RestBean {
 	}
 	
 	
+	
+	@DELETE
+	@Path("/users/loggedIn/{username}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response logout(@PathParam("username") String username) {
+		User checkLoggedIn = usersData.getLoggedInUsers().get(username);
+		if (checkLoggedIn == null ) {
+			return Response.status(Response.Status.BAD_REQUEST).entity("Not logged in").build();
+		}
+		
+		usersData.getLoggedInUsers().remove(username);
+		
+		serversRest.informNodesAboutLoggedInUsers();
+		
+		// WebSocket
+		ObjectMapper mapper = new ObjectMapper();
+        try {
+			String jsonMessage = mapper.writeValueAsString(usersData.getLoggedInUsers().values());
+			ws.updateLoggedInUsers(jsonMessage);
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+
+		// Log ------------
+		System.out.println("User { " + username + " } logged OUT");
+		// -----------------
+
+		return Response.status(Response.Status.OK).build();
+	}
 	
 	
 	

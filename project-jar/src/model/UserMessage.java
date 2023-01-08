@@ -19,6 +19,8 @@ public class UserMessage implements Serializable{
 	
 	private String subject;
 	
+	private boolean sentOverNetwork = false; // Prevents loop when sending to all users over network
+	
 	public UserMessage() {
 		super();
 	}
@@ -72,7 +74,13 @@ public class UserMessage implements Serializable{
 		this.subject = subject;
 	}
 	
-	
+	public boolean isSentOverNetwork() {
+		return sentOverNetwork;
+	}
+
+	public void setSentOverNetwork(boolean sentOverNetwork) {
+		this.sentOverNetwork = sentOverNetwork;
+	}
 	
 	
 }
