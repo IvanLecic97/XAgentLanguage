@@ -13,6 +13,7 @@ public class Agent {
 	
 	private String username;
 	private User user;
+	private AgentType name;
 	
 	public Agent() {
 		
@@ -21,6 +22,7 @@ public class Agent {
 	public Agent(String username, User user) {
 		this.username = username;
 		this.user = user;
+		this.name.setName("chat");
 	}
 
 	public String getUsername() {
@@ -40,6 +42,16 @@ public class Agent {
 	}
 	
 	
+	
+	
+	public AgentType getName() {
+		return name;
+	}
+
+	public void setName(AgentType name) {
+		this.name = name;
+	}
+
 	public void onMessage(Message msg) {
 		try {
 			 ObjectMessage objectMessage = (ObjectMessage) msg;

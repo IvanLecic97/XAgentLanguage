@@ -26,10 +26,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import agents.AgentManager;
+import agents.ResearchAgent;
 import dataManager.UserDataBean;
+import model.AID;
 import model.Node;
 import model.User;
 import model.UserMessage;
+import server.NodeManager;
 import server.ServersRestLocal;
 //import ws.WSEndpoint;
 import ws.WSEndpoint;
@@ -58,6 +61,9 @@ public class RestBeanRemote implements RestBean {
 	
 	@EJB
 	private ServersRestLocal serversRest;
+	
+	@EJB 
+	private NodeManager nodeManager;
 
 	@Override
 	public String register(User user) {
@@ -69,6 +75,11 @@ public class RestBeanRemote implements RestBean {
 		User newUser = new User(user.getUsername(), user.getPassword(), node.getAddress());
 		usersData.getRegisteredUsers().put(newUser.getUsername(), newUser);
 		agents.createNewAgent(newUser.getUsername(), newUser);
+		
+		//AID aid = new AID(newUser.getUsername(), nodeManager.getNode());
+		//ResearchAgent researchAgent = new ResearchAgent();
+		//researchAgent.setId(aid);
+		//agents.createNewResearchAgent(researchAgent);
 		
 		serversRest.informNodesNewUserRegistered(newUser);
 		
@@ -93,6 +104,8 @@ public class RestBeanRemote implements RestBean {
 			return Response.status(Response.Status.BAD_REQUEST).entity("Bad username or password, please try again!").build();
 		}
 		usersData.getLoggedInUsers().put(regUser.getUsername(), regUser);
+		ResearchAgent researchAgent = agents.getResearchAgentByName(regUser.getUsername());
+		agents.getRunningResearchAgents().put(researchAgent.getAid(), researchAgent);
 		
 		serversRest.informNodesAboutLoggedInUsers();
 		

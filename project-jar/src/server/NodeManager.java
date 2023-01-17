@@ -60,6 +60,7 @@ public class NodeManager {
 			this.node.setAlias(System.getProperty("jboss.node.name") + ":8080");
 			
 			
+		//	this.master = "192.168.0.16:8080";
 			this.master = "127.0.0.1:8080";
 			System.out.println("MASTER ADDR: " + master + ", node name: " + this.node.getAlias() + ", node address: " + this.node.getAddress());
 			
