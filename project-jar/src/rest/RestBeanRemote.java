@@ -26,7 +26,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import agents.AgentManager;
+import agents.ResearchAgent;
 import dataManager.UserDataBean;
+import model.AID;
 import model.Node;
 import model.User;
 import model.UserMessage;
@@ -70,6 +72,11 @@ public class RestBeanRemote implements RestBean {
 		usersData.getRegisteredUsers().put(newUser.getUsername(), newUser);
 		agents.createNewAgent(newUser.getUsername(), newUser);
 		
+		AID aid = new AID();
+		aid.setHost(node);
+		aid.setName(newUser.getUsername());
+		agents.createNewResearchAgent(aid);
+		
 		serversRest.informNodesNewUserRegistered(newUser);
 		
 		return "Registered";
@@ -93,6 +100,11 @@ public class RestBeanRemote implements RestBean {
 			return Response.status(Response.Status.BAD_REQUEST).entity("Bad username or password, please try again!").build();
 		}
 		usersData.getLoggedInUsers().put(regUser.getUsername(), regUser);
+		///samo testiram pokrenutost agenata
+		ResearchAgent agent = agents.getResearchAgentByName(regUser.getUsername());
+		agents.setResearchAgentRunning(agent);
+		
+		
 		
 		serversRest.informNodesAboutLoggedInUsers();
 		
