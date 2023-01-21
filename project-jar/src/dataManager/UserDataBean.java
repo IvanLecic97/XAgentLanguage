@@ -17,6 +17,8 @@ public class UserDataBean {
 	private HashMap<String, User> registeredUsers;
 	private HashMap<String, User> loggedInUsers;
 	
+	public static String JNDISTRING = "java:app/project-jar/UserDataBean!dataManager.UserDataBean";
+	
 	public UserDataBean() {
 		this.registeredUsers = new HashMap<String, User>();
 		this.loggedInUsers = new HashMap<String, User>();

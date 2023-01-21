@@ -15,7 +15,7 @@ public class ResearchAgent extends AgentClass {
 	private List<ACLMessage> aclMessages;
 	
 	
-	
+	public static String JNDISTRING = "java:app/project-jar/ResearchAgent!agents.ResearchAgent";
 	
 	
 	public ResearchAgent() {

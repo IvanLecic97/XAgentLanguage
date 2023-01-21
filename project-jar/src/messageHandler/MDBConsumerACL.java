@@ -39,8 +39,6 @@ public class MDBConsumerACL implements MessageListener{
 			ObjectMessage objectMessage = (ObjectMessage) msg;
 			ACLMessage aclMessage = (ACLMessage) objectMessage.getObject();
 			
-			//ObjectMapper mapper = new ObjectMapper();
-			
 			switch(aclMessage.getPerformative()) {
 			case request :
 				handler.handlePerformative(aclMessage);

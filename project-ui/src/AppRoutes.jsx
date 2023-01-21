@@ -3,6 +3,7 @@ import { Route, Routes } from "react-router-dom";
 import Login from "./login/Login";
 import Message from "./messages/Message";
 import ViewMessages from "./messages/ViewMessages";
+import RealEstateModel from "./realEstate/RealEstateModel";
 
 import Register from "./register/Register";
 
@@ -13,6 +14,7 @@ const AppRoutes = () => {
       <Route path="/login" element={<Login />} />
       <Route path="/send-message" element={<Message />} />
       <Route path="/view-messages" element={<ViewMessages />} />
+      <Route path="/realEstateModel" element={<RealEstateModel />} />
     </Routes>
   );
 };

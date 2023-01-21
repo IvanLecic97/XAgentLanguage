@@ -110,4 +110,8 @@ public class AgentManager {
 		
 	}
 	
+	public void stopAgentRunning(AID aid) {
+		getRunningResearchAgents().remove(aid);
+	}
+	
 }

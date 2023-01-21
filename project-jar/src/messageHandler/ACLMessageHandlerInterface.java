@@ -9,4 +9,7 @@ public interface ACLMessageHandlerInterface {
 
 	public void handlePerformative(ACLMessage message);
 	
+	
+	
+	public String testJNDI();
 }

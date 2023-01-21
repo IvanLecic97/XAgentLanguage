@@ -17,6 +17,7 @@ import model.User;
 
 public interface ServersRestRemote {
 	
+	public static String JNDISTRING = "java:global/project-ear/project-jar/ServersRest!server.ServersRestRemote";
 	
 	@POST
 	@Path("/register")

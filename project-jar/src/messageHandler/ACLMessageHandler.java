@@ -33,6 +33,15 @@ public class ACLMessageHandler implements ACLMessageHandlerInterface{
 			receiver.handleMessage(message);
 		}
 	}
+
+
+	@Override
+	public String testJNDI() {
+		// TODO Auto-generated method stub
+		return "Radi dobro LOOKUP";
+	}
+	
+	
 	
 	
 	
