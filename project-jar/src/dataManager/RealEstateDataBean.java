@@ -32,6 +32,9 @@ public class RealEstateDataBean {
 		this.realEstateList.add(new RealEstate(RealEstateType.apartment, 3, 52, "Jevrejska 23", "+381648274673", "Trosoban stan u Jevrejskoj", 2, 300, "Centar", false));
 		this.realEstateList.add(new RealEstate(RealEstateType.apartment, 5, 67, "Ilije Bircanina 3", "+381648763927", "Prostran stan u Ilije Bircanina, zgrada ima lift", 6, 300, "Detelinara", true));
 		this.realEstateList.add(new RealEstate(RealEstateType.apartment, 3, 44, "Pavla Papa 23", "+381648736271", "Udoban stan u centru grada, zgrada ima lift", 3, 260, "Centar", true));
+		this.realEstateList.add(new RealEstate(RealEstateType.villa, 12, 189, "Petra Drapsina 4", "+39=8765940058", "VIla u centru", 0, 1000, "Centar", true));
+		this.realEstateList.add(new RealEstate(RealEstateType.apartment, 6, 116, "Dr Ribara 7", "+38766342805", "Stan na Limanu u blizini fakulteta, pogodan za vise studenata", 10, 500, "Liman", true));
+		this.realEstateList.add(new RealEstate(RealEstateType.apartment, 3, 46, "Dr Ribara 7", "+38766342805", "Stan na Limanu u blizini fakulteta, pogodan za vise studenata", 3, 250, "Liman", true));
 	}
 
 

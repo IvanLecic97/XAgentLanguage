@@ -19,6 +19,7 @@ import javax.jms.QueueSession;
 import javax.jms.Session;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -40,6 +41,7 @@ import dataManager.RealEstateDataBean;
 import messageHandler.ACLMessageHandlerInterface;
 import model.ACLMessage;
 import model.AID;
+import model.Node;
 import model.Performative;
 import realEstate.RealEstate;
 import realEstate.RealEstateDTO;
@@ -57,6 +59,8 @@ public class ResearchAgentRest implements ResearchAgentRestRemote {
 	private Queue queue;
 	
 	public static List<RealEstate> realEstateList = new ArrayList<>();
+	
+	public static String JNDISTRING = "java:global/project-ear/project/jar/ResearchAgentRest!rest.ResearchAgentRest";
 	
 	@EJB
 	private AgentManager agents;
@@ -79,10 +83,10 @@ public class ResearchAgentRest implements ResearchAgentRestRemote {
 
 
 	@Override
-	public Response getRunningAgents() {
+	public List<ResearchAgent> getRunningAgents() {
 		// TODO Auto-generated method stub
 		List<ResearchAgent> retVal = agents.getRunningResearchAgents().values().stream().collect(Collectors.toList());
-		return Response.status(Response.Status.OK).entity(retVal).build();
+		return retVal;
 	}
 	
 	@GET
@@ -131,12 +135,28 @@ public class ResearchAgentRest implements ResearchAgentRestRemote {
 	}
 	
 	
+	
 
 
 
 	@Override
-	public Response filterRealEstate(RealEstateDTO realEstateDTO) {
+	public List<RealEstate> filter(RealEstateDTO dto) {
+		// TODO Auto-generated method stub
 		List<RealEstate> lista = dataBean.getRealEstateList();
+		lista = lista.stream().filter(e -> e.getType().toString().equals(dto.getType()))
+				.filter(e -> e.getPrice() >= dto.getMinPrice())
+				.filter(e -> e.getPrice() <= dto.getMaxPrice())
+				.filter(e -> e.getSize() >= dto.getMinSize())
+				.filter(e -> e.getSize() <= dto.getMaxSize())
+				.filter(e -> e.getLocation().equals(dto.getLocation())).collect(Collectors.toList());
+		return lista;
+	}
+
+
+
+	@Override
+	public List<RealEstate> filterRealEstate(RealEstateDTO realEstateDTO) {
+		List<RealEstate> lista = filter(realEstateDTO);
 		/*if(!realEstateDTO.getType().equals("empty") || !realEstateDTO.getType().equals(null)) {
 			lista = lista.stream().filter(e -> e.getType().toString().equals(realEstateDTO.getType())).collect(Collectors.toList());
 		} 
@@ -155,13 +175,6 @@ public class ResearchAgentRest implements ResearchAgentRestRemote {
 		if(!realEstateDTO.getLocation().equals("empty") || !realEstateDTO.getLocation().equals(null)) {
 			lista = lista.stream().filter(e -> e.getLocation().equals(realEstateDTO.getLocation())).collect(Collectors.toList());
 		} */
-		
-		lista = lista.stream().filter(e -> e.getType().toString().equals(realEstateDTO.getType()))
-				.filter(e -> e.getPrice() >= realEstateDTO.getMinPrice())
-				.filter(e -> e.getPrice() <= realEstateDTO.getMaxPrice())
-				.filter(e -> e.getSize() >= realEstateDTO.getMinSize())
-				.filter(e -> e.getSize() <= realEstateDTO.getMaxSize())
-				.filter(e -> e.getLocation().equals(realEstateDTO.getLocation())).collect(Collectors.toList());
 				
 		ACLMessage message = new ACLMessage();
 		ObjectMapper mapper = new ObjectMapper();
@@ -176,9 +189,10 @@ public class ResearchAgentRest implements ResearchAgentRestRemote {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		requestDataFromOtherAgents(realEstateDTO);
 		
-		
-		return Response.status(Response.Status.OK).entity(lista).build(); //sendACLMessage(message);
+		//return Response.status(Response.Status.OK).entity(lista).build(); //sendACLMessage(message);
+		return lista;
 	}
 
 
@@ -227,19 +241,105 @@ public class ResearchAgentRest implements ResearchAgentRestRemote {
 	@GET
 	@Path("/testGetAgents")
 	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
 	public Response testGetAgents() {
+		List<ResearchAgent> retList = new ArrayList<>();
 		
-		Agent user = agents.getAgentByUsername("ika97");
 		ResteasyClient client = new ResteasyClientBuilder().build();
-		ResteasyWebTarget rtarget = client.target("http://" + user.getUser().getHost() + "/project-war/rest/agentRest");
-		ResearchAgentRestRemote researchRest = rtarget.proxy(ResearchAgentRestRemote.class);
+		//ResearchAgent agent = agents.getResearchAgentByName("ika97");
+		//Node node = agent.getAid().getHost();
+		for(Node n : nodeManager.getNodes()) {
+			System.out.println(n.getAddress());
+			System.out.println(n.getAlias());
+		/*	if(!n.getAlias().equals(node.getAlias())) {
+				System.out.println("Usao je u for nodes petlju");
+				ResteasyClient client = new ResteasyClientBuilder().build();
+				ResteasyWebTarget rtarget = client.target("http://" + n.getAddress() + "/project-war/rest/agentRest");
+				ResearchAgentRestRemote researchRest = rtarget.proxy(ResearchAgentRestRemote.class);
+				retList = researchRest.getRunningAgents();
+			} */
+		}
+		if(!nodeManager.getNode().getAddress().equals(nodeManager.getMaster())) {
+			ResteasyWebTarget rtarget = client.target("http://" + nodeManager.getMaster() + "/project-war/rest/agentRest");
+			ResearchAgentRestRemote researchRest = rtarget.proxy(ResearchAgentRestRemote.class);
+			retList = researchRest.getRunningAgents();
+		}
 		
-		return Response.status(Response.Status.OK).entity(researchRest.getRunningAgents()).build();
+		
+		
+		return Response.status(Response.Status.OK).entity(retList).build();
+		
+	}
+
+
+
+	//@Override
+	public void requestDataFromOtherAgents(RealEstateDTO realEstateDTO) {
+		// TODO Auto-generated method stub
+		List<AID> aidList = new ArrayList<>();
+		ResteasyClient client = new ResteasyClientBuilder().build();
+		ResearchAgent sender = agents.getResearchAgentByName(realEstateDTO.getUsername());
+		//if(sender.getAid().getHost().getAddress().equals(nodeManager.getMaster()))
+		for(Node n : nodeManager.getNodes()) {
+			if(!sender.getAid().getHost().getAddress().equals(n.getAddress())) {
+				ResteasyWebTarget rtarget = client.target("http://" + n.getAddress() + "/project-war/rest/agentRest");
+				ResearchAgentRestRemote researchRest = rtarget.proxy(ResearchAgentRestRemote.class);
+				for(ResearchAgent a : researchRest.getRunningAgents()) {
+					aidList.add(a.getAid());
+				}
+			}
+		}
+		if(!sender.getAid().getHost().getAddress().equals(nodeManager.getMaster())) {
+			ResteasyWebTarget rtarget = client.target("http://" + nodeManager.getMaster() + "/project-war/rest/agentRest");
+			ResearchAgentRestRemote researchRest = rtarget.proxy(ResearchAgentRestRemote.class);
+			for(ResearchAgent a : researchRest.getRunningAgents()) {
+				aidList.add(a.getAid());
+			}
+		}
+		
+		AID[] receivers = aidList.toArray(new AID[aidList.size()]);
+		
+		ACLMessage aclMessage = new ACLMessage();
+		aclMessage.setSender(sender.getAid());
+		aclMessage.setReceivers(receivers);
+		aclMessage.setPerformative(Performative.request);
+		String content = "";
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			content = mapper.writeValueAsString(realEstateDTO);
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		aclMessage.setContent(content);
+		Response response = sendACLMessage(aclMessage);
+		
+	}
+
+
+
+	@Override
+	public void addACLToAgent(ACLMessage message, String username) {
+		// TODO Auto-generated method stub
+		/*try {
+			String contextString = ResearchAgent.JNDISTRING;
+			InitialContext context = new InitialContext();
+			ResearchAgent agent = (ResearchAgent) context.lookup(contextString);
+			agent.handleMessage(message);
+		} catch (NamingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} */
+		ResearchAgent agent = agents.getResearchAgentByName(username);
+		agent.handleMessage(message);
 		
 	}
 	
 	
 	
+	public void sendRespondMessage(String username, List<RealEstateDTO> list) {
+		
+	}
 	
 	
 	

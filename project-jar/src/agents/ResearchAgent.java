@@ -41,7 +41,7 @@ public class ResearchAgent extends AgentClass {
 	@Override
 	public void handleMessage(ACLMessage message) {
 		System.out.println("Na pocetku je petlje");
-		System.out.println(this.getAid().equals(null) ? "Null je majku mu prcim" : "nije null");
+		//System.out.println(this.getAid().equals(null) ? "Null je majku mu prcim" : "nije null");
 		System.out.println(this.getAid().getName()+ " a ovo je ime");
 		if(message.getSender().getName().equals(this.getAid().getName())) {  ///dodaj posaljiocu agentu poruku
 			System.out.println("Uso je u petlju ovu");

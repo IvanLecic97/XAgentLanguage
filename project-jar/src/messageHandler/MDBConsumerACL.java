@@ -40,8 +40,11 @@ public class MDBConsumerACL implements MessageListener{
 			ACLMessage aclMessage = (ACLMessage) objectMessage.getObject();
 			
 			switch(aclMessage.getPerformative()) {
-			case request :
+			case inform :
 				handler.handlePerformative(aclMessage);
+				break;
+			case request :
+				handler.handleRequest(aclMessage);
 				break;
 			default:
 				break;

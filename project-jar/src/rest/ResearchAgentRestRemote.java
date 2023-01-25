@@ -1,5 +1,7 @@
 package rest;
 
+import java.util.List;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -11,10 +13,14 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import agents.ResearchAgent;
 import model.ACLMessage;
 import model.UserMessage;
+import realEstate.RealEstate;
 import realEstate.RealEstateDTO;
 
+
+@Consumes(MediaType.APPLICATION_JSON)
 public interface ResearchAgentRestRemote {
 
 	public static String JNDISTRING = "java:global/project-ear/project-jar/ResearchAgentRest!rest.ResearchAgentRestRemote";
@@ -27,7 +33,8 @@ public interface ResearchAgentRestRemote {
 	@GET
 	@Path("/agents/running")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getRunningAgents();
+
+	public List<ResearchAgent> getRunningAgents();
 	
 	@POST
 	@Path("/messages")
@@ -46,10 +53,20 @@ public interface ResearchAgentRestRemote {
 	@Path("/realEstate/filter")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response filterRealEstate(RealEstateDTO realEstateDTO);
+	public List<RealEstate> filterRealEstate(RealEstateDTO realEstateDTO);
+	
+	@POST
+	@Path("/addACLToAgent")
+	public void addACLToAgent(ACLMessage message, String username);
+	
+	@POST
+	@Path("/filterMethod")
+	public List<RealEstate> filter(RealEstateDTO dto);
 	
 	
 	
 	
+	
+	//public void requestDataFromOtherAgents(RealEstateDTO realEstateDTO);
 	
 }
