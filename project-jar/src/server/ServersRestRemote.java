@@ -12,6 +12,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import agents.ResearchAgent;
+import model.AID;
 import model.Node;
 import model.User;
 
@@ -68,5 +70,10 @@ public interface ServersRestRemote {
 	@Path("/node")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getNodeHealth();
+	
+	@POST
+	@Path("/agents/running")
+	@Produces(MediaType.APPLICATION_JSON)
+	public HashMap<AID, ResearchAgent> getRunningAgents();
 
 }

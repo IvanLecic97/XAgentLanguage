@@ -189,8 +189,9 @@ public class ResearchAgentRest implements ResearchAgentRestRemote {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		requestDataFromOtherAgents(realEstateDTO);
+		//requestDataFromOtherAgents(realEstateDTO);
 		
+		Response response = sendACLMessage(message);
 		//return Response.status(Response.Status.OK).entity(lista).build(); //sendACLMessage(message);
 		return lista;
 	}
@@ -273,7 +274,7 @@ public class ResearchAgentRest implements ResearchAgentRestRemote {
 
 
 
-	//@Override
+	@Override
 	public void requestDataFromOtherAgents(RealEstateDTO realEstateDTO) {
 		// TODO Auto-generated method stub
 		List<AID> aidList = new ArrayList<>();
@@ -284,6 +285,7 @@ public class ResearchAgentRest implements ResearchAgentRestRemote {
 			if(!sender.getAid().getHost().getAddress().equals(n.getAddress())) {
 				ResteasyWebTarget rtarget = client.target("http://" + n.getAddress() + "/project-war/rest/agentRest");
 				ResearchAgentRestRemote researchRest = rtarget.proxy(ResearchAgentRestRemote.class);
+				System.out.println("Usao u prvu petlju kod prolaska kroz nodove");
 				for(ResearchAgent a : researchRest.getRunningAgents()) {
 					aidList.add(a.getAid());
 				}

@@ -22,6 +22,8 @@ public class AgentManager {
 	private HashMap<AID, ResearchAgent> researchAgents;
 	private HashMap<AID, ResearchAgent> runningResearchAgents;
 	
+	public static String JNDISTRING = "java:global/project-ear/project-jar/AgentManager!agents.AgentManager";
+	
 	public AgentManager() {
 		agents = new HashMap<String, Agent>();
 		researchAgents = new HashMap<AID, ResearchAgent>();

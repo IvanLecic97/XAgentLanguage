@@ -7,12 +7,21 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.ObjectMessage;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
+import org.jboss.resteasy.client.jaxrs.ResteasyClient;
+import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
+import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import agents.AgentManager;
 import agents.ResearchAgent;
 import model.ACLMessage;
+import model.AID;
+import model.Performative;
+import rest.ResearchAgentRestRemote;
 import ws.WSEndpoint;
 
 @MessageDriven(activationConfig = {
@@ -22,8 +31,8 @@ import ws.WSEndpoint;
 
 public class MDBConsumerACL implements MessageListener{
 	
-	@EJB
-	private WSEndpoint ws;
+	//@EJB
+	//private WSEndpoint ws;
 	
 	//@EJB
 	//private AgentManager agents;
@@ -41,10 +50,12 @@ public class MDBConsumerACL implements MessageListener{
 			
 			switch(aclMessage.getPerformative()) {
 			case inform :
-				handler.handlePerformative(aclMessage);
+			//	handler.handlePerformative(aclMessage);
+				handler.handleInform(aclMessage);
+				
 				break;
 			case request :
-				handler.handleRequest(aclMessage);
+					handler.handleRequest(aclMessage);
 				break;
 			default:
 				break;

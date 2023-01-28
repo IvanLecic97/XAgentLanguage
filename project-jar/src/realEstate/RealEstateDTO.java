@@ -4,19 +4,19 @@ public class RealEstateDTO {
 	
 	private String type;
 	
-	double roomsNumber;
+	//double roomsNumber;
 	
 	double minSize;
 	
 	double maxSize;
 	
-	String address;
+	//String address;
 	
-	String ownerNumber;
+	//String ownerNumber;
 	
-	String name;
+	//String name;
 	
-	int floor;
+	//int floor;
 	
 	int minPrice;
 	
@@ -24,7 +24,7 @@ public class RealEstateDTO {
 	
 	String location;
 	
-	boolean elevator;
+	//boolean elevator;
 	
 	String username;
 	
@@ -38,17 +38,17 @@ public class RealEstateDTO {
 			String ownerNumber, String name, int floor, int minPrice, int maxPrice, String location, boolean elevator) {
 		super();
 		this.type = type;
-		this.roomsNumber = roomsNumber;
+		//this.roomsNumber = roomsNumber;
 		this.minSize = minSize;
 		this.maxSize = maxSize;
-		this.address = address;
-		this.ownerNumber = ownerNumber;
-		this.name = name;
-		this.floor = floor;
+		//this.address = address;
+		//this.ownerNumber = ownerNumber;
+		//this.name = name;
+		//this.floor = floor;
 		this.minPrice = minPrice;
 		this.maxPrice = maxPrice;
 		this.location = location;
-		this.elevator = elevator;
+		//this.elevator = elevator;
 	}
 
 
@@ -62,15 +62,7 @@ public class RealEstateDTO {
 	}
 
 
-	public double getRoomsNumber() {
-		return roomsNumber;
-	}
-
-
-	public void setRoomsNumber(double roomsNumber) {
-		this.roomsNumber = roomsNumber;
-	}
-
+	
 
 	public double getMinSize() {
 		return minSize;
@@ -92,44 +84,7 @@ public class RealEstateDTO {
 	}
 
 
-	public String getAddress() {
-		return address;
-	}
-
-
-	public void setAddress(String address) {
-		this.address = address;
-	}
-
-
-	public String getOwnerNumber() {
-		return ownerNumber;
-	}
-
-
-	public void setOwnerNumber(String ownerNumber) {
-		this.ownerNumber = ownerNumber;
-	}
-
-
-	public String getName() {
-		return name;
-	}
-
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-
-	public int getFloor() {
-		return floor;
-	}
-
-
-	public void setFloor(int floor) {
-		this.floor = floor;
-	}
+	
 
 
 	public int getMinPrice() {
@@ -162,15 +117,7 @@ public class RealEstateDTO {
 	}
 
 
-	public boolean isElevator() {
-		return elevator;
-	}
-
-
-	public void setElevator(boolean elevator) {
-		this.elevator = elevator;
-	}
-
+	
 
 	public String getUsername() {
 		return username;

@@ -55,7 +55,7 @@ public interface ResearchAgentRestRemote {
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<RealEstate> filterRealEstate(RealEstateDTO realEstateDTO);
 	
-	@POST
+	@PUT
 	@Path("/addACLToAgent")
 	public void addACLToAgent(ACLMessage message, String username);
 	
@@ -66,7 +66,8 @@ public interface ResearchAgentRestRemote {
 	
 	
 	
-	
-	//public void requestDataFromOtherAgents(RealEstateDTO realEstateDTO);
+	@POST
+	@Path("/requestData")
+	public void requestDataFromOtherAgents(RealEstateDTO realEstateDTO);
 	
 }

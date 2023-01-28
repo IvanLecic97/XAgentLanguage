@@ -23,7 +23,10 @@ import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import agents.AgentManager;
+import agents.ResearchAgent;
 import dataManager.UserDataBean;
+import model.AID;
 import model.Node;
 import model.User;
 import ws.WSEndpoint;
@@ -38,6 +41,9 @@ public class NodeManager {
 	
 	@EJB
 	private WSEndpoint ws;
+	
+	@EJB
+	private AgentManager agentManager;
 	
 	private String master = null;
 	private Node node = new Node();
@@ -87,6 +93,12 @@ public class NodeManager {
 				for (User user: this.data.getLoggedInUsers().values()) {
 					System.out.println("Username: " + user.getUsername() + " Node: " + user.getHost());
 				}
+				HashMap<AID, ResearchAgent> agents = rest.getRunningAgents();
+				
+				for(AID a : agents.keySet()) {
+					agentManager.getRunningResearchAgents().put(a, agents.get(a));
+				}
+				
 				System.out.println("Handshake completed");
 			}
 			

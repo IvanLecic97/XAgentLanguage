@@ -11,5 +11,7 @@ public interface ACLMessageHandlerInterface {
 	
 	public void handleRequest(ACLMessage message);
 	
+	public void handleInform(ACLMessage ACLMessage);
+	
 	public String testJNDI();
 }

@@ -2,30 +2,43 @@ package realEstate;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class RealEstate implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	
+	@JsonProperty("id")
 	private long id;
 	
+	@JsonProperty("type")
 	private RealEstateType type;
 	
+	@JsonProperty("roomsNumber")
 	private double roomsNumber;
 	
+	@JsonProperty("size")
 	private double size;
 	
+	@JsonProperty("address")
 	private String address;
 	
+	@JsonProperty("ownerNumber")
 	private String ownerNumber;
 	
+	@JsonProperty("name")
 	private String name;
 	
+	@JsonProperty("floor")
 	private int floor;
 	
+	@JsonProperty("price")
 	private int price;
 	
+	@JsonProperty("location")
 	private String location;
 	
+	@JsonProperty("elevator")
 	private boolean elevator;
 	
 	public RealEstate() {

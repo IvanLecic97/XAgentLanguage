@@ -19,7 +19,10 @@ import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import agents.AgentManager;
+import agents.ResearchAgent;
 import dataManager.UserDataBean;
+import model.AID;
 import model.Node;
 import model.User;
 import ws.WSEndpoint;
@@ -40,6 +43,9 @@ public class ServersRest implements ServersRestLocal, ServersRestRemote{
 	
 	@EJB
 	private WSEndpoint ws;
+	
+	@EJB
+	private AgentManager agentManager;
 	
 	
 	
@@ -202,5 +208,18 @@ public class ServersRest implements ServersRestLocal, ServersRestRemote{
 	public Node getNode() {
 		return nodeManager.getNode();
 	}
+
+	@Override
+	public HashMap<AID, ResearchAgent> getRunningAgents() {
+		// TODO Auto-generated method stub
+		
+		if (!nodeManager.getNode().getAddress().equals(nodeManager.getMaster())) {
+			return null;
+		}
+		
+		return agentManager.getRunningResearchAgents();
+	}
+	
+	
 
 }
