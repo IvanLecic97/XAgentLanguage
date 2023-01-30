@@ -34,7 +34,6 @@ public interface ResearchAgentRestRemote {
 	@GET
 	@Path("/agents/running")
 	@Produces(MediaType.APPLICATION_JSON)
-
 	public List<ResearchAgent> getRunningAgents();
 	
 	@POST

@@ -189,7 +189,7 @@ public class ACLMessageHandler implements ACLMessageHandlerInterface{
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-				ws.sendToOne(receiver.getAid().getName(), packageString);
+				ws.sendEntities(packageString);
 				
 				
 				
