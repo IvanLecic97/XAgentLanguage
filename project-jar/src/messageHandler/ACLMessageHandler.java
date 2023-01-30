@@ -1,7 +1,9 @@
 package messageHandler;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
@@ -27,6 +29,8 @@ import realEstate.RealEstate;
 import realEstate.RealEstateDTO;
 import rest.ResearchAgentRest;
 import rest.ResearchAgentRestRemote;
+import ws.WSEndpoint;
+import ws.WSEndpoint2;
 
 @LocalBean
 @Remote(ACLMessageHandlerInterface.class)
@@ -40,14 +44,25 @@ public class ACLMessageHandler implements ACLMessageHandlerInterface{
 	@EJB
 	private RealEstateDataBean dataBean;
 	
+	@EJB
+	private WSEndpoint ws;
+	
+	@EJB
+	private WSEndpoint2 ws2;
+	
 	
 	@Override
 	public void handlePerformative(ACLMessage message) {
 		// TODO Auto-generated method stub
 		ResearchAgent sender = agents.getResearchAgentByName(message.getSender().getName());
+		dataBean.setFilteredRealEstate(new HashSet<>());
+		
 		if(sender != null) {
 			System.out.println("Uso u mdb petlju");
 			sender.handleMessage(message);
+			
+			
+			
 		}
 		for(AID a : message.getReceivers()) {
 			ResearchAgent receiver = agents.getResearchAgentByName(a.getName());
@@ -65,6 +80,7 @@ public class ACLMessageHandler implements ACLMessageHandlerInterface{
 
 	@Override
 	public void handleRequest(ACLMessage message) {
+		dataBean.setFilteredRealEstate(new HashSet<>());
 		ResearchAgent sender = this.agents.getResearchAgentByName(message.getSender().getName());
 		if(sender.getAid() != null) {
 		sender.handleMessage(message);
@@ -82,7 +98,31 @@ public class ACLMessageHandler implements ACLMessageHandlerInterface{
 		List<RealEstate> retList = new ArrayList<>();
 		retList = dataBean.filter(dto);
 		
-		dataBean.getFilteredRealEstate().addAll(retList);
+		//for(RealEstate r : retList) {
+		//	dataBean.addElement(r);
+		//}
+		
+		
+		
+		String stringMessage = "";
+		
+		try {
+			stringMessage = mapper.writeValueAsString(retList);
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		String packageString = "";
+		try {
+			packageString = mapper.writeValueAsString(sender.getAclMessages());
+		} catch (JsonProcessingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		ws.sendEntities(packageString);
+		
+		ws2.sendEntities(stringMessage);
 		
 		}
 		
@@ -129,18 +169,32 @@ public class ACLMessageHandler implements ACLMessageHandlerInterface{
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+					
 				} else {
 					returnMessage.setPerformative(Performative.failure);
 					returnMessage.setContent("");
 				}
 				
 				ResteasyClient client1 = new ResteasyClientBuilder().build();
-				ResteasyWebTarget target1 = client1.target("http://" + sender.getAid().getHost().getAlias() + "/project-war/rest/agentRest");
+				ResteasyWebTarget target1 = client1.target("http://" + message.getSender().getHost().getAlias() + "/project-war/rest/agentRest");
 				ResearchAgentRestRemote ragent1 = target1.proxy(ResearchAgentRestRemote.class);
 				ragent1.sendACLMessage(returnMessage);
 				
-				ResteasyWebTarget target = client.target("http://" + receiver.getAid().getHost().getAlias()+ "/project-war/rest/agentRest");
-				ResearchAgentRestRemote ragent = target1.proxy(ResearchAgentRestRemote.class);
+				
+				
+				String packageString = "";
+				try {
+					packageString = mapper.writeValueAsString(receiver.getAclMessages());
+				} catch (JsonProcessingException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				ws.sendToOne(receiver.getAid().getName(), packageString);
+				
+				
+				
+				ResteasyWebTarget target = client.target("http://" + receiver.getAid().getHost().getAlias() + "/project-war/rest/agentRest");
+				ResearchAgentRestRemote ragent = target.proxy(ResearchAgentRestRemote.class);
 				ragent.sendACLMessage(returnMessage);
 				
 				
@@ -150,8 +204,9 @@ public class ACLMessageHandler implements ACLMessageHandlerInterface{
 				
 				
 				
+				
 			}else {
-			ResteasyWebTarget target = client.target("http://" + a.getHost().getAddress() + "/project-war/rest/agentRest");
+			ResteasyWebTarget target = client.target("http://" + a.getHost().getAlias() + "/project-war/rest/agentRest");
 			ResearchAgentRestRemote ragent = target.proxy(ResearchAgentRestRemote.class);
 			System.out.println("Ime risivera :" + a.getName());
 			System.out.println(a.getHost().getAddress());
@@ -175,13 +230,22 @@ public class ACLMessageHandler implements ACLMessageHandlerInterface{
 			
 			sender.handleMessage(ACLMessage);
 			
+			ObjectMapper mapper = new ObjectMapper();
+			
+			String packageString = "";
+			try {
+				packageString = mapper.writeValueAsString(sender.getAclMessages());
+			} catch (JsonProcessingException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			ws.sendToOne(sender.getAid().getName(), packageString);
+			
 		}
-		
-		
 		
 		for(AID a : ACLMessage.getReceivers()) {
 			ResearchAgent receiver = this.agents.getResearchAgentByName(a.getName());
-			System.out.println("ime primaca je " + receiver.getAid().getName());
+			//System.out.println("ime primaca je " + receiver.getAid().getName());
 			if(receiver.getAid() != null) {
 				receiver.handleMessage(ACLMessage);
 				System.out.println(ACLMessage.getContent());
@@ -202,8 +266,39 @@ public class ACLMessageHandler implements ACLMessageHandlerInterface{
 				for(RealEstate r : retList) {
 					System.out.println(r);
 				}
+				Set<RealEstate> retSet = new HashSet<>(retList);
+				for(RealEstate r : retList) {
+					dataBean.addElement(r);
+				}
 				
-				dataBean.getFilteredRealEstate().addAll(retList);
+				
+				//String packageString = "";
+				try {
+					String	packageString = mapper.writeValueAsString(receiver.getAclMessages());
+					System.out.println("User kome saljem websocket je " + receiver.getAid().getName()) ;
+					System.out.println("Duzina njegovih acl poruka je " + receiver.getAclMessages().size());
+					//for(ACLMessage msg : receiver.getAclMessages()) {
+					//	System.out.println(msg.getPerformative() + " Performative");
+					//}
+					System.out.println(packageString);
+					ws.sendEntities(packageString);
+				} catch (JsonProcessingException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
+				
+				
+			
+				String stringMessage = "";
+				try {
+					stringMessage = mapper.writeValueAsString(retList);
+				} catch (JsonProcessingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				ws2.sendEntities(stringMessage);
+				
 				
 				
 			}

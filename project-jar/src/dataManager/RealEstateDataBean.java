@@ -40,6 +40,7 @@ public class RealEstateDataBean {
 	//	this.realEstateList.add(new RealEstate(RealEstateType.villa, 12, 189, "Petra Drapsina 4", "+39=8765940058", "VIla u centru", 0, 1000, "Centar", true));
 		//this.realEstateList.add(new RealEstate(RealEstateType.apartment, 6, 116, "Dr Ribara 7", "+38766342805", "Stan na Limanu u blizini fakulteta, pogodan za vise studenata", 10, 500, "Liman", true));
 	//	this.realEstateList.add(new RealEstate(RealEstateType.apartment, 3, 46, "Dr Ribara 7", "+38766342805", "Stan na Limanu u blizini fakulteta, pogodan za vise studenata", 3, 250, "Liman", true));
+		this.realEstateList.add(new RealEstate(RealEstateType.businiess, 5, 69, "Radnicka 32", "+381648793874", "Poslovni prostor na top lokaciji", 1, 700, "Centar", false));
 	}
 
 
@@ -75,4 +76,19 @@ public class RealEstateDataBean {
 		return lista;
 	}
 	
+	
+	public void addElement(RealEstate r) {
+		if(this.getFilteredRealEstate().isEmpty()) {
+			this.getFilteredRealEstate().add(r);
+		}else {
+		
+		
+		for(RealEstate re : this.getFilteredRealEstate()) {
+			if(re.getId() != r.getId() && !re.getAddress().equals(r.getAddress()) && !re.getOwnerNumber().equals(r.getOwnerNumber())
+					&& !re.getName().equals(r.getName()) && re.isElevator() != r.isElevator()) {
+				this.getFilteredRealEstate().add(r);
+			}
+		}
+		}
+	}
 }

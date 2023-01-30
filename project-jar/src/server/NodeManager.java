@@ -93,11 +93,7 @@ public class NodeManager {
 				for (User user: this.data.getLoggedInUsers().values()) {
 					System.out.println("Username: " + user.getUsername() + " Node: " + user.getHost());
 				}
-				HashMap<AID, ResearchAgent> agents = rest.getRunningAgents();
 				
-				for(AID a : agents.keySet()) {
-					agentManager.getRunningResearchAgents().put(a, agents.get(a));
-				}
 				
 				System.out.println("Handshake completed");
 			}

@@ -134,7 +134,7 @@ function Message() {
   useEffect(() => {
     initWebSocket();
     fetchUsers();
-    fetchMessages();
+    // fetchMessages();
 
     console.log(socketUrl);
   }, []);

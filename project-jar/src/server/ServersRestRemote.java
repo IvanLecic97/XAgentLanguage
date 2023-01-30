@@ -74,6 +74,6 @@ public interface ServersRestRemote {
 	@POST
 	@Path("/agents/running")
 	@Produces(MediaType.APPLICATION_JSON)
-	public HashMap<AID, ResearchAgent> getRunningAgents();
+	public List<ResearchAgent> getRunningAgents();
 
 }

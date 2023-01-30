@@ -35,6 +35,7 @@ import model.UserMessage;
 import server.ServersRestLocal;
 //import ws.WSEndpoint;
 import ws.WSEndpoint;
+import ws.WSEndpoint2;
 
 
 
@@ -60,6 +61,9 @@ public class RestBeanRemote implements RestBean {
 	
 	@EJB
 	private ServersRestLocal serversRest;
+	
+	@EJB
+	private WSEndpoint2 ws2;
 
 	@Override
 	public String register(User user) {

@@ -1,5 +1,6 @@
 package rest;
 
+import java.util.HashSet;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -64,10 +65,19 @@ public interface ResearchAgentRestRemote {
 	public List<RealEstate> filter(RealEstateDTO dto);
 	
 	
+	@GET
+	@Path("/getFiteredRealEstate")
+	@Produces(MediaType.APPLICATION_JSON)
+	public HashSet<RealEstate> getFilteredRealEstate();
 	
 	
 	@POST
 	@Path("/requestData")
 	public void requestDataFromOtherAgents(RealEstateDTO realEstateDTO);
+	
+	@GET
+	@Path("/getAgentsACLMessages/{username}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<ACLMessage> getUsersACLMessages(@PathParam("username") String username);
 	
 }

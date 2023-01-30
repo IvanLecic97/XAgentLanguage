@@ -3,7 +3,6 @@ package ws;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.ejb.LocalBean;
@@ -15,13 +14,10 @@ import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-
 @Singleton
 @LocalBean
-@ServerEndpoint(value = "/ws/{username}")
-public class WSEndpoint {
+@ServerEndpoint(value = "/ws/secondEndpoint/{username}")
+public class WSEndpoint2 {
 
 	private static Map<String, Session> sessions = Collections
 			.synchronizedMap(new HashMap<String, Session>());
@@ -30,15 +26,6 @@ public class WSEndpoint {
 			.synchronizedMap(new HashMap<String, String>());
 	
 	
-	 public void updateLoggedInUsers(String users) {
-	    	for (Session session: sessions.values()) {
-	    		try {
-					session.getBasicRemote().sendText(users);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-	    	}
-	    }
 	 
 	 @OnOpen
 		public void onOpen(Session session, @PathParam("username") String username) throws IOException {
@@ -60,20 +47,8 @@ public class WSEndpoint {
 			session.close();
 			t.printStackTrace();
 		}
-	 
 		
-		//Send message to all users
-		public void broadcast(String message) {
-	    	for (Session session: sessions.values()) {
-	    		try {
-					session.getBasicRemote().sendText(message);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-	    	}
-	    }
 		
-		//Send message to one user
 		public void sendToOne(String username, String message) {
 	    	if (sessions.containsKey(username)) {
 	    		try {
@@ -84,20 +59,6 @@ public class WSEndpoint {
 	    	}
 	    }
 		
-		
-		//Update messages list
-		public void sendMessages(List<?> messages) {
-			ObjectMapper object = new ObjectMapper();
-		    for (Session session : sessions.values()) {
-		        try {
-		            session.getBasicRemote().sendText(object.writeValueAsString(messages));
-		        } catch (IOException ex) {
-		            // handle error
-		        }
-		    }
-		}
-		
-		//Send filtered entities via websocket
 		public void sendEntities(String entities) {
 			for(Session session : sessions.values()) {
 				try {
@@ -108,5 +69,6 @@ public class WSEndpoint {
 				}
 			}
 		}
-		
+	
+	
 }

@@ -32,6 +32,7 @@ const Login = () => {
       console.log(response.data.id);
       console.log(response.data.username);
       localStorage.setItem("username", response.data.username);
+      localStorage.setItem("host", response.data.host);
       console.log(localStorage.getItem("username") + "asdad");
     });
     //navigate("/sendMessage");

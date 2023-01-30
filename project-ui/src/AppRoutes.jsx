@@ -2,6 +2,7 @@ import { React } from "react";
 import { Route, Routes } from "react-router-dom";
 import Login from "./login/Login";
 import Message from "./messages/Message";
+import ViewACLMessages from "./messages/ViewACLMessages";
 import ViewMessages from "./messages/ViewMessages";
 import RealEstateModel from "./realEstate/RealEstateModel";
 
@@ -15,6 +16,7 @@ const AppRoutes = () => {
       <Route path="/send-message" element={<Message />} />
       <Route path="/view-messages" element={<ViewMessages />} />
       <Route path="/realEstateModel" element={<RealEstateModel />} />
+      <Route path="/view-acl-messages" element={<ViewACLMessages />} />
     </Routes>
   );
 };

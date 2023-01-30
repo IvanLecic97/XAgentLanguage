@@ -1,6 +1,7 @@
 package model;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.HashMap;
 
 public class ACLMessage implements Serializable {
@@ -44,6 +45,7 @@ public class ACLMessage implements Serializable {
 	public ACLMessage() {
 		this.userArgs = new HashMap<String, Object>();
 		this.receivers = new AID[0];
+		this.replyBy = Instant.now().toEpochMilli();
 	}
 
 

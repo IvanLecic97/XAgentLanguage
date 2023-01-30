@@ -153,6 +153,24 @@ public class RealEstate implements Serializable{
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
+
+	/*@Override
+	public boolean equals(Object obj) {
+		// TODO Auto-generated method stub
+		  if (this == obj) return true;
+		    if (!(obj instanceof RealEstate)) return false;
+		    RealEstate re = (RealEstate) obj;
+		    return type.equals(re.type) &&
+		           address.equals(re.address) &&
+		           roomsNumber == re.roomsNumber &&
+		           size == re.size && 
+		           ownerNumber.equals(re.ownerNumber) &&
+		           name.equals(re.name) &&
+		           floor == re.floor &&
+		           price == re.price &&
+		           location.equals(re.location) &&
+		           elevator == re.elevator;
+	} */
 	
 	
 	

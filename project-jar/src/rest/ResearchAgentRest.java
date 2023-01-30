@@ -1,6 +1,7 @@
 package rest;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -336,12 +337,30 @@ public class ResearchAgentRest implements ResearchAgentRestRemote {
 		agent.handleMessage(message);
 		
 	}
-	
-	
-	
-	public void sendRespondMessage(String username, List<RealEstateDTO> list) {
+
+
+
+	@Override
+	public HashSet<RealEstate> getFilteredRealEstate() {
+		// TODO Auto-generated method stub
 		
+		
+		
+		return dataBean.getFilteredRealEstate();
 	}
+
+
+
+	@Override
+	public List<ACLMessage> getUsersACLMessages(String username) {
+		// TODO Auto-generated method stub
+		ResearchAgent agent = agents.getResearchAgentByName(username);
+		return agent.getAclMessages();
+	}
+	
+	
+	
+	
 	
 	
 	

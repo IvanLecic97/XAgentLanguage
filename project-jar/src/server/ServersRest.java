@@ -1,5 +1,6 @@
 package server;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Predicate;
@@ -210,14 +211,18 @@ public class ServersRest implements ServersRestLocal, ServersRestRemote{
 	}
 
 	@Override
-	public HashMap<AID, ResearchAgent> getRunningAgents() {
+	public List<ResearchAgent> getRunningAgents() {
 		// TODO Auto-generated method stub
 		
 		if (!nodeManager.getNode().getAddress().equals(nodeManager.getMaster())) {
 			return null;
 		}
+		List<ResearchAgent> retList = new ArrayList<>();
+		for(ResearchAgent r : agentManager.getRunningResearchAgents().values()) {
+			retList.add(r);
+		}
 		
-		return agentManager.getRunningResearchAgents();
+		return retList;
 	}
 	
 	

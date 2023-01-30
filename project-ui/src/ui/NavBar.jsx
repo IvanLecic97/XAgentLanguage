@@ -18,6 +18,12 @@ function NavBar() {
         <li>
           <Link to="/view-messages">View Messages</Link>
         </li>
+        <li>
+          <Link to="/realEstateModel">Real estate</Link>
+        </li>
+        <li>
+          <Link to="/view-acl-messages">ACL Messages</Link>
+        </li>
       </ul>
     </nav>
   );

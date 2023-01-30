@@ -1,16 +1,30 @@
 package agents;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import javax.ejb.Stateful;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import model.ACLMessage;
 import model.AID;
+import ws.WSEndpoint;
 
 @Stateful
-public class ResearchAgent extends AgentClass {
+public class ResearchAgent extends AgentClass implements Serializable  {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 
 	private List<ACLMessage> aclMessages;
 	
@@ -57,6 +71,28 @@ public class ResearchAgent extends AgentClass {
 		
 	} */
 		this.getAclMessages().add(message);
+		
+		/*ObjectMapper mapper = new ObjectMapper();
+		String packageString = "";
+		try {
+			packageString = mapper.writeValueAsString(this.getAclMessages());
+		} catch (JsonProcessingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		String wsString = "java:global/project-ear/project-war/WSEndpoint!ws.WSEndpoint";
+		try {
+			Context context = new InitialContext();
+			WSEndpoint ws = (WSEndpoint) context.lookup(wsString);
+			ws.sendToOne(this.getAid().getName(), packageString);
+			
+		} catch (NamingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} */
+		
+		
 }
 	
 	public List<String> getNames(AID[] list){
